@@ -82,7 +82,7 @@ public class BeaconRequest: Equatable {
 	*/
 	public init(beaconFamilyWithUUID uuid: String, identifier: String? = nil) {
 		self.identifier = (identifier ?? NSUUID().UUIDString)
-		self.beaconRegion = CLBeaconRegion(proximityUUID: NSUUID(UUIDString: self.UUID)!, identifier: self.identifier)
+		self.beaconRegion = CLBeaconRegion(proximityUUID: NSUUID(UUIDString: uuid)!, identifier: self.identifier)
 	}
 	
 	/**
@@ -97,7 +97,7 @@ public class BeaconRequest: Equatable {
 	*/
 	public init(beaconWithUUID uuid: String, major: CLBeaconMajorValue, minor: CLBeaconMajorValue, identifier: String? = nil) {
 		self.identifier = (identifier ?? NSUUID().UUIDString)
-		self.beaconRegion = CLBeaconRegion(proximityUUID: NSUUID(UUIDString: self.UUID)!, major: self.majorID!, minor: self.minorID!, identifier: self.identifier)
+		self.beaconRegion = CLBeaconRegion(proximityUUID: NSUUID(UUIDString: uuid)!, major: self.majorID!, minor: self.minorID!, identifier: self.identifier)
 	}
 
 	//MARK: Private
