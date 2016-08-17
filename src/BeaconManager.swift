@@ -289,18 +289,18 @@ public class BeaconManager: NSObject, CLLocationManagerDelegate, CBPeripheralMan
 		if let request = self.monitoredGeoRegions.filter({ request in request.region == region }).first {
 			switch state {
 			case .Inside:
-				request.onRegionEntered?()
+				request.onRegionEntered?(region)
 			case .Outside:
-				request.onRegionExited?()
+				request.onRegionExited?(region)
 			default:
 				break
 			}
         } else if let request = self.monitoredBeacons.filter({ request in request.beaconRegion == region }).first {
             switch state {
             case .Inside:
-                request.onRegionEntered?()
+                request.onRegionEntered?(region)
             case .Outside:
-                request.onRegionExited?()
+                request.onRegionExited?(region)
             default:
                 break
             }
@@ -309,17 +309,17 @@ public class BeaconManager: NSObject, CLLocationManagerDelegate, CBPeripheralMan
 	
 	public func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
 		if let request = self.monitoredGeoRegions.filter({ request in request.region == region }).first {
-			request.onRegionEntered?()
+			request.onRegionEntered?(region)
 		} else if let request = self.monitoredBeacons.filter({ request in request.beaconRegion == region }).first {
-            request.onRegionEntered?()
+            request.onRegionEntered?(region)
         }
 	}
 	
 	public func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
 		if let request = self.monitoredGeoRegions.filter({ request in request.region == region }).first {
-			request.onRegionExited?()
+			request.onRegionExited?(region)
         } else if let request = self.monitoredBeacons.filter({ request in request.beaconRegion == region }).first {
-            request.onRegionExited?()
+            request.onRegionExited?(region)
         }
 	}
 	

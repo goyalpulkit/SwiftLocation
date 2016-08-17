@@ -43,7 +43,7 @@ public typealias HeadingHandlerError = (LocationError -> Void)
 public typealias HeadingHandlerSuccess = (CLHeading -> Void)
 public typealias HeadingHandlerCalibration = (Void -> Bool)
 
-public typealias RegionHandlerStateDidChange = (Void -> Void)
+public typealias RegionHandlerStateDidChange = (CLRegion -> Void)
 public typealias RegionHandlerError = (LocationError -> Void)
 
 public typealias VisitHandler = (CLVisit -> Void)
