@@ -301,7 +301,6 @@ public class BeaconManager: NSObject, CLLocationManagerDelegate, CBPeripheralMan
                 manager.startRangingBeaconsInRegion(region)
                 request.onRegionEntered?(region)
             case .Outside:
-                manager.stopRangingBeaconsInRegion(region)
                 request.onRegionExited?(region)
             default:
                 break
