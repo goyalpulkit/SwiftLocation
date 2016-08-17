@@ -39,7 +39,12 @@ public enum BeaconState {
 public class BeaconRequest: Equatable {
 		/// Identifier of the request
 	private(set) var identifier: String
-	
+    
+    /// Handler called when user did entered into the region
+    internal var onRegionEntered: RegionHandlerStateDidChange?
+    /// Handler called when user did exited from this region
+    internal var onRegionExited: RegionHandlerStateDidChange?
+    
 		/// This property contains the identifier that you use to identify your company’s beacons. You typically generate only one UUID for your company’s beacons but can generate more as needed
 	public var UUID: String {
 		get {
@@ -72,6 +77,30 @@ public class BeaconRequest: Equatable {
 		/// Handler called when an error has occurred. Request will be stopped and removed from the queue.
 	public var onRangeDidFail: RangeBeaconsDidFailHandler?
 	
+    /**
+     Chainable function used to change the handler the system call when user did entered into the region
+     
+     - parameter handler: handler to call
+     
+     - returns: self, used to make the function chainable
+     */
+    public func onRegionEntered(handler: RegionHandlerStateDidChange?) -> BeaconRequest {
+        onRegionEntered = handler
+        return self
+    }
+    
+    /**
+     Chainable function used to change the handler the system call when user did exited from the region
+     
+     - parameter handler: handler to call
+     
+     - returns: self, used to make the function chainable
+     */
+    public func onRegionExited(handler: RegionHandlerStateDidChange?) -> BeaconRequest {
+        onRegionExited = handler
+        return self
+    }
+    
 	/**
 	Create a new request to monitor a beacon family identified by passed proximity uuid
 	

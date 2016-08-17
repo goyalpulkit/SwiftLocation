@@ -295,19 +295,32 @@ public class BeaconManager: NSObject, CLLocationManagerDelegate, CBPeripheralMan
 			default:
 				break
 			}
-		}
+        } else if let request = self.monitoredBeacons.filter({ request in request.beaconRegion == region }).first {
+            switch state {
+            case .Inside:
+                request.onRegionEntered?()
+            case .Outside:
+                request.onRegionExited?()
+            default:
+                break
+            }
+        }
 	}
 	
 	public func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
 		if let request = self.monitoredGeoRegions.filter({ request in request.region == region }).first {
 			request.onRegionEntered?()
-		}
+		} else if let request = self.monitoredBeacons.filter({ request in request.beaconRegion == region }).first {
+            request.onRegionEntered?()
+        }
 	}
 	
 	public func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
 		if let request = self.monitoredGeoRegions.filter({ request in request.region == region }).first {
 			request.onRegionExited?()
-		}
+        } else if let request = self.monitoredBeacons.filter({ request in request.beaconRegion == region }).first {
+            request.onRegionExited?()
+        }
 	}
 	
 	public func locationManager(manager: CLLocationManager, monitoringDidFailForRegion region: CLRegion?, withError error: NSError) {
