@@ -295,11 +295,13 @@ public class BeaconManager: NSObject, CLLocationManagerDelegate, CBPeripheralMan
 			default:
 				break
 			}
-        } else if let request = self.monitoredBeacons.filter({ request in request.beaconRegion == region }).first {
+        } else if let request = self.monitoredBeacons.filter({ request in request.beaconRegion == region }).first, region = request.beaconRegion {
             switch state {
             case .Inside:
+                manager.startRangingBeaconsInRegion(region)
                 request.onRegionEntered?(region)
             case .Outside:
+                manager.stopRangingBeaconsInRegion(region)
                 request.onRegionExited?(region)
             default:
                 break
@@ -310,7 +312,8 @@ public class BeaconManager: NSObject, CLLocationManagerDelegate, CBPeripheralMan
 	public func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
 		if let request = self.monitoredGeoRegions.filter({ request in request.region == region }).first {
 			request.onRegionEntered?(region)
-		} else if let request = self.monitoredBeacons.filter({ request in request.beaconRegion == region }).first {
+		} else if let request = self.monitoredBeacons.filter({ request in request.beaconRegion == region }).first, region = request.beaconRegion {
+            manager.startRangingBeaconsInRegion(region)
             request.onRegionEntered?(region)
         }
 	}
@@ -318,7 +321,8 @@ public class BeaconManager: NSObject, CLLocationManagerDelegate, CBPeripheralMan
 	public func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
 		if let request = self.monitoredGeoRegions.filter({ request in request.region == region }).first {
 			request.onRegionExited?(region)
-        } else if let request = self.monitoredBeacons.filter({ request in request.beaconRegion == region }).first {
+        } else if let request = self.monitoredBeacons.filter({ request in request.beaconRegion == region }).first, region = request.beaconRegion {
+            manager.stopRangingBeaconsInRegion(region)
             request.onRegionExited?(region)
         }
 	}
