@@ -52,7 +52,7 @@ open class BeaconRegionRequest: NSObject, Request {
 		if beacon.major == nil && beacon.minor == nil {
 			self.region = CLBeaconRegion(proximityUUID: proximityUUID, identifier: self.UUID)
 		} else if beacon.major != nil && beacon.minor != nil {
-			self.region = CLBeaconRegion(proximityUUID: proximityUUID, major: beacon.major!, minor: beacon.minor!, identifier: self.UUID)
+			self.region = CLBeaconRegion(proximityUUID: proximityUUID, major: beacon.major!, minor: beacon.minor!, identifier: "\(self.UUID)_\(beacon.major)_\(beacon.minor)")
 		} else {
 			return nil
 		}
