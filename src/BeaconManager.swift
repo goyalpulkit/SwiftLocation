@@ -311,6 +311,18 @@ public class BeaconsManager : NSObject, CLLocationManagerDelegate, CBPeripheralM
 		self.remove(request: self.monitoredBeacon(forRegion: region), error: error)
 	}
 	
+    @objc public func locationManager(manager: CLLocationManager, didDetermineState state: CLRegionState, forRegion region: CLRegion) {
+        switch(state) {
+        case .Inside:
+            self.locationManager(manager, didEnterRegion: region)
+            break
+        case .Outside:
+            self.locationManager(manager, didExitRegion: region)
+            break
+        default:
+            break
+        }
+    }
 	//MARK: Location Manager Beacons
 	
 	@objc public func locationManager(manager: CLLocationManager, rangingBeaconsDidFailFor region: CLBeaconRegion, withError error: NSError) {
