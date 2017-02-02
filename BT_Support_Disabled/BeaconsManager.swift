@@ -192,7 +192,10 @@ open class BeaconsManager : NSObject, CLLocationManagerDelegate, CBPeripheralMan
 				if try self.requestLocationServiceAuthorizationIfNeeded() == false {
 					if request.type.contains(Event.RegionBoundary) {
 						self.manager.startMonitoring(for: request.region)
+                        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(5 * Double(NSEC_PER_SEC)))
+                        dispatch_after(delayTime, dispatch_get_main_queue()) {
 						self.manager.requestState(for: request.region)
+                        }
 					}
 					if request.type.contains(Event.Ranging) {
 						self.manager.startRangingBeacons(in: request.region)
