@@ -192,7 +192,7 @@ public class BeaconsManager : NSObject, CLLocationManagerDelegate, CBPeripheralM
 				if try self.requestLocationServiceAuthorizationIfNeeded() == false {
 					if request.type.contains(Event.RegionBoundary) {
 						self.manager.startMonitoringForRegion(request.region)
-                        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(5 * Double(NSEC_PER_SEC)))
+                        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(0.5 * Double(NSEC_PER_SEC)))
                         dispatch_after(delayTime, dispatch_get_main_queue()) {
                             self.manager.requestStateForRegion(request.region)
                         }
