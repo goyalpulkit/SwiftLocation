@@ -30,7 +30,7 @@ import Foundation
 import CoreLocation
 import CoreBluetooth
 
-public let Beacons :BeaconsManager = BeaconsManager.shared
+public let Beacons: BeaconsManager = BeaconsManager.shared
 
 public class BeaconsManager : NSObject, CLLocationManagerDelegate, CBPeripheralManagerDelegate {
 	public static let shared = BeaconsManager()
