@@ -138,7 +138,7 @@ public class BeaconsManager : NSObject, CLLocationManagerDelegate, CBPeripheralM
 			return false
 		}
 		let request = self.advertisedDevices[idx]
-		request.state = .failed(error!)
+        request.state = error != nil ? .failed(error!) : .paused
 		self.advertisedDevices.remove(at: idx)
 		self.updateBeaconAdvertise()
 		return false
@@ -224,7 +224,7 @@ public class BeaconsManager : NSObject, CLLocationManagerDelegate, CBPeripheralM
 			guard let idx = self.monitoredBeaconRegions.index(where: { $0.UUID == request.UUID }) else {
 				return false
 			}
-			request.state = .failed(error!)
+        request.state = error != nil ? .failed(error!) : .paused
 			if request.type.contains(BeaconEvent.RegionBoundary) {
 				self.manager.stopMonitoring(for: request.region)
 			}
