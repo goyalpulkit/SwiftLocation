@@ -48,7 +48,7 @@ open class GeoRegionRequest: NSObject, Request {
 	open var onStateDidChange: RegionStateDidChange?
 	open var onError: RegionMonitorError?
 	
-	open var rState: RequestState = .pending
+	open var state: RequestState = .idle
 	
 	public init(coordinates: CLLocationCoordinate2D, radius: CLLocationDistance) {
 		self.UUID = Foundation.UUID().uuidString
@@ -65,7 +65,7 @@ open class GeoRegionRequest: NSObject, Request {
 	
 	open func pause() {
 		if Beacons.remove(request: self) == true {
-			self.rState = .paused
+			self.state = .paused
 		}
 	}
 	

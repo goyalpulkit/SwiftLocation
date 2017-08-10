@@ -30,14 +30,16 @@ import Foundation
 import CoreBluetooth
 import CoreLocation
 
+public typealias LocationHandlerAuthDidChange = ((CLAuthorizationStatus?) -> Void)
+
 open class BeaconAdvertiseRequest: NSObject, Request {
 	
 	
 	open var UUID: String
-	open var rState: RequestState = .pending
+	open var state: RequestState = .idle
 	fileprivate(set) var region: CLBeaconRegion
 	fileprivate(set) var RSSIPower: NSNumber?
-	fileprivate(set) var name: String
+	public var name: String? = "Beacon"
 	/// Authorization did change
 	open var onAuthorizationDidChange: LocationHandlerAuthDidChange?
 	
@@ -57,8 +59,8 @@ open class BeaconAdvertiseRequest: NSObject, Request {
 	}
 	
 	open func cancel(_ error: LocationError?) {
-		if self.rState.isRunning == true {
-			_ = Beacons.stopAdvertise(self.name, error: error)
+		if self.state.isRunning == true {
+			_ = Beacons.stopAdvertise(self.name!, error: error)
 		}
 	}
 	
@@ -67,19 +69,48 @@ open class BeaconAdvertiseRequest: NSObject, Request {
 	}
 	
 	open func pause() {
-		if self.rState.isRunning == true {
-			_ = Beacons.stopAdvertise(self.name, error: nil)
-			self.rState = .paused
+		if self.state.isRunning == true {
+			_ = Beacons.stopAdvertise(self.name!, error: nil)
+			self.state = .paused
 		}
 	}
 	
 	open func start() {
-		if self.rState.canStart == true {
-			self.rState = .running
+		if self.state.canStart == true {
+			self.state = .running
 			Beacons.updateBeaconAdvertise()
 		}
 	}
 	
+    /// Resume or start request
+    open func resume() {
+        start()
+    }
+    
+    open func onResume() {}
+    
+    /// Called when a request is paused
+    open func onPause() {}
+    
+    /// Called when a request is cancelled
+    open func onCancel() {}
+    
+    /// Define what kind of authorization it require
+    open var requiredAuth: Authorization = .both
+    
+    /// Is a background request?
+    open var isBackgroundRequest: Bool = true
+    
+    /// Dispatch an error
+    ///
+    /// - Parameter error: error
+    open func dispatch(error: Error) {}
+    
+    /// Return `true` if request is on a queue
+    open var isInQueue: Bool {
+        return Location.isQueued(self)
+    }
+    
 	internal func dataToAdvertise() -> [String:Any] {
 		let data: [String:Any] = [
 			CBAdvertisementDataLocalNameKey : self.name as ImplicitlyUnwrappedOptional<Any>,

@@ -30,10 +30,61 @@ import Foundation
 import CoreBluetooth
 import CoreLocation
 
+public typealias LocationHandlerAuthDidChange = ((CLAuthorizationStatus?) -> Void)
+
+
+/**
+ *  This option set define the type of events you can monitor via BeaconManager class's monitor() func
+ */
+public struct Event : OptionSet {
+    public let rawValue: UInt8
+    public init(rawValue: UInt8) { self.rawValue = rawValue }
+    
+    /// Monitor a region cross boundary event (enter and exit from the region)
+    public static let RegionBoundary = Event(rawValue: 1 << 0)
+    /// Monitor beacon ranging
+    public static let Ranging = Event(rawValue: 1 << 1)
+    /// Monitor both region cross boundary and beacon ranging events
+    public static let All : Event = [.RegionBoundary, .Ranging]
+}
+
+/**
+ *  This structure define a beacon object
+ */
+public struct Beacon {
+    public var proximityUUID: String
+    public var major: CLBeaconMajorValue?
+    public var minor: CLBeaconMinorValue?
+    
+    /**
+     Initializa a new beacon to monitor
+     
+     - parameter proximity: This property contains the identifier that you use to identify your company’s beacons. You typically generate only one UUID for your company’s beacons but can generate more as needed. You generate this value using the uuidgen command-line tool
+     - parameter major:     The major property contains a value that can be used to group related sets of beacons. For example, a department store might assign the same major value for all of the beacons on the same floor.
+     - parameter minor:     The minor property specifies the individual beacon within a group. For example, for a group of beacons on the same floor of a department store, this value might be assigned to a beacon in a particular section.
+     
+     - returns: a new beacon structure
+     */
+    public init(proximity: String, major: CLBeaconMajorValue?, minor: CLBeaconMinorValue?) {
+        self.proximityUUID = proximity
+        self.major = major
+        self.minor = minor
+    }
+}
+
+public enum RegionState {
+    case entered
+    case exited
+}
+
+public typealias RegionStateDidChange = ((RegionState) -> Void)
+public typealias RegionBeaconsRanging = (([CLBeacon]) -> Void)
+public typealias RegionMonitorError = ((LocationError) -> Void)
+
 open class BeaconRegionRequest: NSObject, Request {
 	
 	open var UUID: String
-	open var rState: RequestState = .pending
+	open var state: RequestState = .idle
 	fileprivate(set) var region: CLBeaconRegion
 	fileprivate(set) var type: Event
 	/// Authorization did change
@@ -42,7 +93,8 @@ open class BeaconRegionRequest: NSObject, Request {
 	open var onStateDidChange: RegionStateDidChange?
 	open var onRangingBeacons: RegionBeaconsRanging?
 	open var onError: RegionMonitorError?
-	
+	public var name: String? = "BeaconRegionRequest"
+    
 	init?(beacon: Beacon, monitor: Event) {
 		self.type = monitor
 		guard let proximityUUID = Foundation.UUID(uuidString: beacon.proximityUUID) else { // invalid Proximity UUID
@@ -68,16 +120,44 @@ open class BeaconRegionRequest: NSObject, Request {
 	
 	open func pause() {
 		if Beacons.remove(request: self) == true {
-			self.rState = .paused
+			self.state = .paused
 		}
 	}
 	
 	open func start() {
-		if self.rState.isRunning == false {
+		if self.state.isRunning == false {
 			if Beacons.add(request: self) == true {
-				self.rState = .running
+				self.state = .running
 			}
 		}
 	}
 
+    /// Resume or start request
+    open func resume() {
+        start()
+    }
+    
+    open func onResume() {}
+    
+    /// Called when a request is paused
+    open func onPause() {}
+    
+    /// Called when a request is cancelled
+    open func onCancel() {}
+    
+    /// Define what kind of authorization it require
+    open var requiredAuth: Authorization = .both
+    
+    /// Is a background request?
+    open var isBackgroundRequest: Bool = true
+    
+    /// Dispatch an error
+    ///
+    /// - Parameter error: error
+    open func dispatch(error: Error) {}
+    
+    /// Return `true` if request is on a queue
+    open var isInQueue: Bool {
+        return Location.isQueued(self)
+    }
 }

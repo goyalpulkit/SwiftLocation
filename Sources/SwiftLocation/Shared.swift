@@ -129,6 +129,24 @@ public enum RequestState: CustomStringConvertible, Equatable, Hashable {
 			return false
 		}
 	}
+    
+    public var canStart: Bool {
+        switch self {
+        case .idle, .paused:
+            return true
+        default:
+            return false
+        }
+    }
+    
+    public var isPending: Bool {
+        switch self {
+        case .idle, .waitingUserAuth:
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 /// Public Request Protocol

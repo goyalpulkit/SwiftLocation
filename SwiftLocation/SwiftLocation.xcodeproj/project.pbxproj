@@ -32,6 +32,8 @@
 		08CAD1CA1E5B679200059693 /* VisitsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CAD1BE1E5B679200059693 /* VisitsRequest.swift */; };
 		08CAD1CC1E5B67FE00059693 /* Structs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CAD1CB1E5B67FE00059693 /* Structs.swift */; };
 		08F1E9A71E23EF12003931B9 /* SwiftLocation.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 083697481E22B5E4009E90F2 /* SwiftLocation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		ED9DB6CD1F3C7E4F000EE6DD /* BeaconRegionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED9DB6C91F3C7E4F000EE6DD /* BeaconRegionRequest.swift */; };
+		ED9DB6CE1F3C7E4F000EE6DD /* BeaconsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED9DB6CA1F3C7E4F000EE6DD /* BeaconsManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,6 +95,8 @@
 		08CAD1BD1E5B679200059693 /* Shared.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Shared.swift; path = ../../Sources/SwiftLocation/Shared.swift; sourceTree = "<group>"; };
 		08CAD1BE1E5B679200059693 /* VisitsRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VisitsRequest.swift; path = ../../Sources/SwiftLocation/VisitsRequest.swift; sourceTree = "<group>"; };
 		08CAD1CB1E5B67FE00059693 /* Structs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Structs.swift; path = ../../Sources/SwiftLocation/Structs.swift; sourceTree = "<group>"; };
+		ED9DB6C91F3C7E4F000EE6DD /* BeaconRegionRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconRegionRequest.swift; sourceTree = "<group>"; };
+		ED9DB6CA1F3C7E4F000EE6DD /* BeaconsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconsManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,6 +154,7 @@
 			children = (
 				0836974B1E22B5E4009E90F2 /* SwiftLocation.h */,
 				0836974C1E22B5E4009E90F2 /* Info.plist */,
+				ED9DB6C71F3C7E4F000EE6DD /* BT_Support */,
 				083697841E22B65E009E90F2 /* Library Source */,
 			);
 			path = SwiftLocation;
@@ -204,6 +209,16 @@
 				08CAD1CB1E5B67FE00059693 /* Structs.swift */,
 			);
 			name = "Library Source";
+			sourceTree = "<group>";
+		};
+		ED9DB6C71F3C7E4F000EE6DD /* BT_Support */ = {
+			isa = PBXGroup;
+			children = (
+				ED9DB6C91F3C7E4F000EE6DD /* BeaconRegionRequest.swift */,
+				ED9DB6CA1F3C7E4F000EE6DD /* BeaconsManager.swift */,
+			);
+			name = BT_Support;
+			path = ../../BT_Support_Disabled;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -364,9 +379,11 @@
 				08CAD1C21E5B679200059693 /* GeocoderRequest.swift in Sources */,
 				08CAD1CC1E5B67FE00059693 /* Structs.swift in Sources */,
 				08CAD1C71E5B679200059693 /* RegionRequest.swift in Sources */,
+				ED9DB6CE1F3C7E4F000EE6DD /* BeaconsManager.swift in Sources */,
 				08CAD1C41E5B679200059693 /* IPService.swift in Sources */,
 				08CAD1C01E5B679200059693 /* Extensions.swift in Sources */,
 				08CAD1CA1E5B679200059693 /* VisitsRequest.swift in Sources */,
+				ED9DB6CD1F3C7E4F000EE6DD /* BeaconRegionRequest.swift in Sources */,
 				08CAD1C81E5B679200059693 /* RequestsQueue.swift in Sources */,
 				08CAD1C11E5B679200059693 /* Frequency.swift in Sources */,
 				08CAD1C61E5B679200059693 /* LocationTracker.swift in Sources */,
