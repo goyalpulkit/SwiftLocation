@@ -32,8 +32,8 @@ import CoreBluetooth
 
 public let Beacons :BeaconsManager = BeaconsManager.shared
 
-open class BeaconsManager : NSObject, CLLocationManagerDelegate, CBPeripheralManagerDelegate {
-	open static let shared = BeaconsManager()
+public class BeaconsManager : NSObject, CLLocationManagerDelegate, CBPeripheralManagerDelegate {
+	public static let shared = BeaconsManager()
 	
 	//MARK Private Variables
 	internal var manager: CLLocationManager
@@ -46,14 +46,14 @@ open class BeaconsManager : NSObject, CLLocationManagerDelegate, CBPeripheralMan
 	/// This identify the largest boundary distance allowed from a region’s center point.
 	/// Attempting to monitor a region with a distance larger than this value causes the location manager
 	/// to send a regionMonitoringFailure error when you monitor a region.
-	open var maximumRegionMonitoringDistance: CLLocationDistance {
+	public var maximumRegionMonitoringDistance: CLLocationDistance {
 		get {
 			return self.manager.maximumRegionMonitoringDistance
 		}
 	}
 	
 	// List of region requests currently being tracked using ranging.
-	open var rangedRegions: [BeaconRegionRequest] {
+	public var rangedRegions: [BeaconRegionRequest] {
 		let trackedRegions = self.manager.rangedRegions
 		return self.monitoredBeaconRegions.filter({ trackedRegions.contains($0.region) })
 	}
@@ -69,7 +69,7 @@ open class BeaconsManager : NSObject, CLLocationManagerDelegate, CBPeripheralMan
 	Remove any monitored region
 	(it will be executed automatically on login)
 	*/
-	open func cleanAllMonitoredRegions() {
+	public func cleanAllMonitoredRegions() {
 		self.manager.monitoredRegions.forEach { self.manager.stopMonitoring(for: $0) }
 	}
 
@@ -87,7 +87,7 @@ open class BeaconsManager : NSObject, CLLocationManagerDelegate, CBPeripheralMan
 	
 	- returns: request
 	*/
-//	open func monitor(geographicRegion coordinates: CLLocationCoordinate2D, radius: CLLocationDistance, onStateDidChange: @escaping RegionStateDidChange, onError: @escaping RegionMonitorError) throws -> GeoRegionRequest {
+//	public func monitor(geographicRegion coordinates: CLLocationCoordinate2D, radius: CLLocationDistance, onStateDidChange: @escaping RegionStateDidChange, onError: @escaping RegionMonitorError) throws -> GeoRegionRequest {
 //		if CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) == false {
 //			throw LocationError.other("Not supported")
 //		}
@@ -111,7 +111,7 @@ open class BeaconsManager : NSObject, CLLocationManagerDelegate, CBPeripheralMan
 	
 	- returns: request
 	*/
-	open func monitor(beacon: Beacon, events: Event, onStateDidChange: RegionStateDidChange?, onRangingBeacons: RegionBeaconsRanging?, onError: @escaping RegionMonitorError) throws -> BeaconRegionRequest {
+	public func monitor(beacon: Beacon, events: Event, onStateDidChange: RegionStateDidChange?, onRangingBeacons: RegionBeaconsRanging?, onError: @escaping RegionMonitorError) throws -> BeaconRegionRequest {
 		let request = try self.createRegion(withBeacon: beacon, monitor: events)
 		request.onStateDidChange = onStateDidChange
 		request.onRangingBeacons = onRangingBeacons
@@ -120,7 +120,7 @@ open class BeaconsManager : NSObject, CLLocationManagerDelegate, CBPeripheralMan
 		return request
 	}
 	
-//	open func advertise(beaconName name: String, UUID: String, major: CLBeaconMajorValue?, minor: CLBeaconMinorValue?, powerRSSI: NSNumber, serviceUUIDs: [String]) -> Bool {
+//	public func advertise(beaconName name: String, UUID: String, major: CLBeaconMajorValue?, minor: CLBeaconMinorValue?, powerRSSI: NSNumber, serviceUUIDs: [String]) -> Bool {
 //		let idx = self.advertisedDevices.index { $0.name == name }
 //		if idx != nil { return false }
 //		
@@ -281,7 +281,7 @@ open class BeaconsManager : NSObject, CLLocationManagerDelegate, CBPeripheralMan
 		self.monitoredGeoRegions.forEach({ _dispatch($0) })
 	}
 	
-	@objc open func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+	@objc public func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
 		switch status {
 		case .denied, .restricted:
 			let err = LocationError.authDidChange(status)
@@ -296,7 +296,7 @@ open class BeaconsManager : NSObject, CLLocationManagerDelegate, CBPeripheralMan
 		self.dispatchAuthorizationDidChange(status)
 	}
 	
-	@objc open func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
+	@objc public func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
 		if peripheral.state == .poweredOn {
 			self.advertisedDevices.forEach({ $0.start() })
 		} else {
@@ -308,17 +308,17 @@ open class BeaconsManager : NSObject, CLLocationManagerDelegate, CBPeripheralMan
 	
 	//MARK: Location Manager Beacon/Geographic Regions
 	
-	@objc open func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+	@objc public func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
 		self.monitoredGeoRegions.filter { $0.region.identifier == region.identifier }.first?.onStateDidChange?(.entered)
 		self.monitoredBeaconRegions.filter {  $0.region.identifier == region.identifier }.first?.onStateDidChange?(.entered)
 	}
 	
-	@objc open func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+	@objc public func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
 		self.monitoredGeoRegions.filter {  $0.region.identifier == region.identifier }.first?.onStateDidChange?(.exited)
 		self.monitoredBeaconRegions.filter {  $0.region.identifier == region.identifier }.first?.onStateDidChange?(.exited)
 	}
 	
-	@objc open func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
+	@objc public func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
 		let error = LocationError.other("Location Manager error")
 		_ = self.remove(request: self.monitoredGeo(forRegion: region), error: error)
 		_ = self.remove(request: self.monitoredBeacon(forRegion: region), error: error)
@@ -338,11 +338,11 @@ open class BeaconsManager : NSObject, CLLocationManagerDelegate, CBPeripheralMan
     }
 	//MARK: Location Manager Beacons
 	
-	@objc open func locationManager(_ manager: CLLocationManager, rangingBeaconsDidFailFor region: CLBeaconRegion, withError error: Error) {
+	@objc public func locationManager(_ manager: CLLocationManager, rangingBeaconsDidFailFor region: CLBeaconRegion, withError error: Error) {
 		self.monitoredBeaconRegions.forEach { $0.cancel(LocationError.other("Location Manager error")) }
 	}
 	
-	@objc open func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
+	@objc public func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
 		self.monitoredBeaconRegions.filter {  $0.region.identifier == region.identifier }.first?.onRangingBeacons?(beacons)
 	}
 	

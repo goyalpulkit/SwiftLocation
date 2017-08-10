@@ -81,18 +81,18 @@ public typealias RegionStateDidChange = ((RegionState) -> Void)
 public typealias RegionBeaconsRanging = (([CLBeacon]) -> Void)
 public typealias RegionMonitorError = ((LocationError) -> Void)
 
-open class BeaconRegionRequest: NSObject, Request {
+public class BeaconRegionRequest: NSObject, Request {
 	
-	open var UUID: String
-	open var state: RequestState = .idle
+	public var UUID: String
+	public var state: RequestState = .idle
 	fileprivate(set) var region: CLBeaconRegion
 	fileprivate(set) var type: Event
 	/// Authorization did change
-	open var onAuthorizationDidChange: LocationHandlerAuthDidChange?
+	public var onAuthorizationDidChange: LocationHandlerAuthDidChange?
 
-	open var onStateDidChange: RegionStateDidChange?
-	open var onRangingBeacons: RegionBeaconsRanging?
-	open var onError: RegionMonitorError?
+	public var onStateDidChange: RegionStateDidChange?
+	public var onRangingBeacons: RegionBeaconsRanging?
+	public var onError: RegionMonitorError?
 	public var name: String? = "BeaconRegionRequest"
     
 	init?(beacon: Beacon, monitor: Event) {
@@ -110,21 +110,21 @@ open class BeaconRegionRequest: NSObject, Request {
 		}
 	}
 	
-	open func cancel(_ error: LocationError?) {
+	public func cancel(_ error: LocationError?) {
 		_ = Beacons.remove(request: self, error: error)
 	}
 	
-	open func cancel() {
+	public func cancel() {
 		self.cancel(nil)
 	}
 	
-	open func pause() {
+	public func pause() {
 		if Beacons.remove(request: self) == true {
 			self.state = .paused
 		}
 	}
 	
-	open func start() {
+	public func start() {
 		if self.state.isRunning == false {
 			if Beacons.add(request: self) == true {
 				self.state = .running
@@ -133,31 +133,31 @@ open class BeaconRegionRequest: NSObject, Request {
 	}
 
     /// Resume or start request
-    open func resume() {
+    public func resume() {
         start()
     }
     
-    open func onResume() {}
+    public func onResume() {}
     
     /// Called when a request is paused
-    open func onPause() {}
+    public func onPause() {}
     
     /// Called when a request is cancelled
-    open func onCancel() {}
+    public func onCancel() {}
     
     /// Define what kind of authorization it require
-    open var requiredAuth: Authorization = .both
+    public var requiredAuth: Authorization = .both
     
     /// Is a background request?
-    open var isBackgroundRequest: Bool = true
+    public var isBackgroundRequest: Bool = true
     
     /// Dispatch an error
     ///
     /// - Parameter error: error
-    open func dispatch(error: Error) {}
+    public func dispatch(error: Error) {}
     
     /// Return `true` if request is on a queue
-    open var isInQueue: Bool {
+    public var isInQueue: Bool {
         return Location.isQueued(self)
     }
 }

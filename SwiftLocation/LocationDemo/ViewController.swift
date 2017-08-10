@@ -53,7 +53,7 @@ class ViewController: UIViewController {
 
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		
+        
 		Location.onChangeTrackerSettings = { settings in
 			self.log(String(describing: settings))
 		}
