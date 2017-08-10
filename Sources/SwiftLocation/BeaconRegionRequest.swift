@@ -84,7 +84,7 @@ public typealias RegionMonitorError = ((LocationError) -> Void)
 public class BeaconRegionRequest: NSObject, Request {
 	
 	public var UUID: String
-	public var state: RequestState = .idle
+	public var state: RequestState = .paused
 	fileprivate(set) var region: CLBeaconRegion
 	fileprivate(set) var type: BeaconEvent
 	/// Authorization did change
