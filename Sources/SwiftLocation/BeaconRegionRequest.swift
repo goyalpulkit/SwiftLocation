@@ -36,16 +36,16 @@ public typealias LocationHandlerAuthDidChange = ((CLAuthorizationStatus?) -> Voi
 /**
  *  This option set define the type of events you can monitor via BeaconManager class's monitor() func
  */
-public struct Event : OptionSet {
+public struct BeaconEvent : OptionSet {
     public let rawValue: UInt8
     public init(rawValue: UInt8) { self.rawValue = rawValue }
     
     /// Monitor a region cross boundary event (enter and exit from the region)
-    public static let RegionBoundary = Event(rawValue: 1 << 0)
+    public static let RegionBoundary = BeaconEvent(rawValue: 1 << 0)
     /// Monitor beacon ranging
-    public static let Ranging = Event(rawValue: 1 << 1)
+    public static let Ranging = BeaconEvent(rawValue: 1 << 1)
     /// Monitor both region cross boundary and beacon ranging events
-    public static let All : Event = [.RegionBoundary, .Ranging]
+    public static let All : BeaconEvent = [.RegionBoundary, .Ranging]
 }
 
 /**
@@ -86,7 +86,7 @@ public class BeaconRegionRequest: NSObject, Request {
 	public var UUID: String
 	public var state: RequestState = .idle
 	fileprivate(set) var region: CLBeaconRegion
-	fileprivate(set) var type: Event
+	fileprivate(set) var type: BeaconEvent
 	/// Authorization did change
 	public var onAuthorizationDidChange: LocationHandlerAuthDidChange?
 
@@ -95,7 +95,7 @@ public class BeaconRegionRequest: NSObject, Request {
 	public var onError: RegionMonitorError?
 	public var name: String? = "BeaconRegionRequest"
     
-	init?(beacon: Beacon, monitor: Event) {
+	init?(beacon: Beacon, monitor: BeaconEvent) {
 		self.type = monitor
 		guard let proximityUUID = Foundation.UUID(uuidString: beacon.proximityUUID) else { // invalid Proximity UUID
 			return nil

@@ -111,7 +111,7 @@ public class BeaconsManager : NSObject, CLLocationManagerDelegate, CBPeripheralM
 	
 	- returns: request
 	*/
-	public func monitor(beacon: Beacon, events: Event, onStateDidChange: RegionStateDidChange?, onRangingBeacons: RegionBeaconsRanging?, onError: @escaping RegionMonitorError) throws -> BeaconRegionRequest {
+	public func monitor(beacon: Beacon, events: BeaconEvent, onStateDidChange: RegionStateDidChange?, onRangingBeacons: RegionBeaconsRanging?, onError: @escaping RegionMonitorError) throws -> BeaconRegionRequest {
 		let request = try self.createRegion(withBeacon: beacon, monitor: events)
 		request.onStateDidChange = onStateDidChange
 		request.onRangingBeacons = onRangingBeacons
@@ -144,7 +144,7 @@ public class BeaconsManager : NSObject, CLLocationManagerDelegate, CBPeripheralM
 		return false
 	}
 	
-	fileprivate func createRegion(withBeacon beacon: Beacon, monitor: Event) throws -> BeaconRegionRequest {
+	fileprivate func createRegion(withBeacon beacon: Beacon, monitor: BeaconEvent) throws -> BeaconRegionRequest {
 		if CLLocationManager.isMonitoringAvailable(for: CLBeaconRegion.self) == false {
 			throw LocationError.other("Not supported")
 		}
@@ -190,13 +190,13 @@ public class BeaconsManager : NSObject, CLLocationManagerDelegate, CBPeripheralM
 //			} else if let request = request as? BeaconRegionRequest {
 				self.monitoredBeaconRegions.append(request)
 				if try self.requestLocationServiceAuthorizationIfNeeded() == false {
-					if request.type.contains(Event.RegionBoundary) {
+					if request.type.contains(BeaconEvent.RegionBoundary) {
 						self.manager.startMonitoring(for: request.region)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
 						self.manager.requestState(for: request.region)
                         }
 					}
-					if request.type.contains(Event.Ranging) {
+					if request.type.contains(BeaconEvent.Ranging) {
 						self.manager.startRangingBeacons(in: request.region)
 					}
 					return true
@@ -225,10 +225,10 @@ public class BeaconsManager : NSObject, CLLocationManagerDelegate, CBPeripheralM
 				return false
 			}
 			request.state = .failed(error!)
-			if request.type.contains(Event.RegionBoundary) {
+			if request.type.contains(BeaconEvent.RegionBoundary) {
 				self.manager.stopMonitoring(for: request.region)
 			}
-			if request.type.contains(Event.Ranging) {
+			if request.type.contains(BeaconEvent.Ranging) {
 				self.monitoredBeaconRegions.remove(at: idx)
 			}
 			return true
